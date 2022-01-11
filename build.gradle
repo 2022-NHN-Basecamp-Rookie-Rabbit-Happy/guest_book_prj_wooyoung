@@ -46,7 +46,7 @@ test {
     useJUnitPlatform()
 }
 
-def querydslDir = "$builㅌdDir/generated/querydsl"
+def querydslDir = "$buildDir/generated/querydsl"
 
 querydsl {
     jpa = true
