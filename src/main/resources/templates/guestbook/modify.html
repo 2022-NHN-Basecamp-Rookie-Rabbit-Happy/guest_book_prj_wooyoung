@@ -5,6 +5,7 @@
     <h1 class="mt-4">GuestBook Modify Page</h1>
 
     <form action="/guestbook/modify" method="post">
+      <input type="hidden" name="page" th:value="${requestDTO.page}">
       <div class="form-group">
         <label>Gno</label>
         <input type="text" class="form-control" name="gno" th:value="${dto.gno}" readonly>
@@ -41,17 +42,55 @@
 
     </form>
 
-    <button type="button" class="btn btn-primary">
+    <button type="button" class="btn btn-primary modifyBtn">
       Modify
     </button>
 
-    <button type="button" class="btn btn-info">
+    <button type="button" class="btn btn-info listBtn">
       List
     </button>
 
-    <button type="button" class="btn btn-danger">
+    <button type="button" class="btn btn-danger removeBtn">
       Remove
     </button>
+
+    <script th:inline="javascript">
+
+      const actionForm = $("form"); // form 태그 객체
+
+      $(".removeBtn").click(() => {
+        actionForm
+        .attr("action", "/guestbook/remove")
+        .attr("method", "post");
+
+        actionForm.submit();
+      })
+
+      $(".modifyBtn").click(() => {
+        if (!confirm("수정하시겠습니까?")) {
+          return;
+        }
+
+        actionForm
+        .attr("action", "/guestbook/modify")
+        .attr("method", "post")
+        .submit();
+      })
+
+      $(".listBtn").click(() => {
+
+        const pageInfo = $("input[name='page']");
+
+        actionForm.empty(); // form 태그의 모든 내용을 지움
+        actionForm.append(pageInfo); // 목록 페이지 이동에 필요한 내용을 추가
+        actionForm
+        .attr("action", "/guestbook/list")
+        .attr("method", "get");
+
+        console.log(actionForm.html());
+        actionForm.submit();
+      })
+    </script>
 
   </th:block>
 </th:block>
