@@ -37,4 +37,8 @@ public interface GuestBookService {
 
     GuestBookDTO read(Long gno);
 
+    void remove(Long gno);
+
+    void modify(GuestBookDTO dto);
+
 }
