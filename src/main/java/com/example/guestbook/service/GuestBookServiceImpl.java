@@ -5,6 +5,7 @@ import com.example.guestbook.dto.PageRequestDTO;
 import com.example.guestbook.dto.PageResultDTO;
 import com.example.guestbook.entity.GuestBook;
 import com.example.guestbook.repository.GuestBookRepository;
+import java.util.Optional;
 import java.util.function.Function;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -18,7 +19,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class GuestBookServiceImpl implements GuestBookService {
 
-    private final GuestBookRepository repository;
+    private final GuestBookRepository guestBookRepository;
 
     @Override
     public Long register(GuestBookDTO dto) {
@@ -29,7 +30,7 @@ public class GuestBookServiceImpl implements GuestBookService {
         GuestBook entity = dtoToEntity(dto);
         log.info(entity);
 
-        repository.save(entity);
+        guestBookRepository.save(entity);
 
         return entity.getGno();
     }
@@ -39,10 +40,18 @@ public class GuestBookServiceImpl implements GuestBookService {
 
         Pageable pageable = requestDTO.getPageable(Sort.by("gno").descending());
 
-        Page<GuestBook> result = repository.findAll(pageable);
+        Page<GuestBook> result = guestBookRepository.findAll(pageable);
 
         Function<GuestBook, GuestBookDTO> fn = entity -> entityToDTO(entity);
 
         return new PageResultDTO<>(result, fn);
+    }
+
+    @Override
+    public GuestBookDTO read(Long gno) {
+
+        Optional<GuestBook> result = guestBookRepository.findById(gno);
+
+        return result.isPresent() ? entityToDTO(result.get()) : null;
     }
 }
