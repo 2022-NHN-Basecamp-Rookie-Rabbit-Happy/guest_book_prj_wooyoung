@@ -1,7 +1,5 @@
 package com.example.guestbook.service;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import com.example.guestbook.dto.GuestBookDTO;
 import com.example.guestbook.dto.PageRequestDTO;
 import com.example.guestbook.dto.PageResultDTO;
@@ -14,7 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 public class GuestBookServiceTest {
 
     @Autowired
-    private GuestBookService service;
+    private GuestBookService guestBookService;
 
     @Test
     public void testRegister() {
@@ -25,7 +23,7 @@ public class GuestBookServiceTest {
             .writer("user0")
             .build();
 
-        System.out.println(service.register(guestBookDTO));
+        System.out.println(guestBookService.register(guestBookDTO));
 
     }
 
@@ -37,7 +35,7 @@ public class GuestBookServiceTest {
             .size(10)
             .build();
 
-        PageResultDTO<GuestBookDTO, GuestBook> resultDTO = service.getList(pageRequestDTO);
+        PageResultDTO<GuestBookDTO, GuestBook> resultDTO = guestBookService.getList(pageRequestDTO);
 
         System.out.println("PREV: " + resultDTO.isPrevEnable());
         System.out.println("NEXT: " + resultDTO.isNextEnable());
@@ -55,5 +53,28 @@ public class GuestBookServiceTest {
             System.out.println(guestBookDTO);
         }
 
+    }
+
+    @Test
+    public void testSearch() {
+        PageRequestDTO pageRequestDTO = PageRequestDTO.builder()
+            .page(1)
+            .size(10)
+            .type("tc") // 검색 조건
+            .keyword("방명록")
+            .build();
+
+        PageResultDTO<GuestBookDTO, GuestBook> resultDTO = guestBookService.getList(pageRequestDTO);
+
+        System.out.println("PREV: " + resultDTO.isPrevEnable());
+        System.out.println("NEXT: " + resultDTO.isNextEnable());
+        System.out.println("TOTAL: " + resultDTO.getTotalPage());
+
+        System.out.println("-----------------------------");
+        for (GuestBookDTO guestBookDTO : resultDTO.getDtoList()) {
+            System.out.println(guestBookDTO);
+        }
+        System.out.println("=============================");
+        resultDTO.getPageList().forEach(i -> System.out.println(i));
     }
 }
